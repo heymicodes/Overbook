@@ -12,4 +12,10 @@ class Category extends Model
      * @var array
      */
     protected $guarded = [];
+
+    public function books()
+    {
+        return $this->belongsToMany('App\Book',  'book_category', 'book_id', 'category_id')
+                        ->using('App\BookCategory');
+    }
 }
