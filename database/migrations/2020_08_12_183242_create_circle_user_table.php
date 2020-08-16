@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCircleUsersTable extends Migration
+class CreateCircleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class CreateCircleUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('circle_users', function (Blueprint $table) {
-            $table->id();
+        Schema::create('circle_user', function (Blueprint $table) {
             $table->foreignId('circle_id');
             $table->foreignId('user_id');
             $table->timestamps();
@@ -28,6 +27,6 @@ class CreateCircleUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('circle_users');
+        Schema::dropIfExists('circle_user');
     }
 }
