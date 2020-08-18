@@ -20,3 +20,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('books', 'BookController');
+
+// Verb	     |  URI	                  |  Action	     |   Route Name
+//-----------|------------------------|--------------|---------------------
+// GET	     |  /books                |  index	     |  books.index
+// GET	     |  /books/create	      |  create	     |  books.create
+// POST	     |  /books                |  store	     |  books.store
+// GET	     |  /books/{book}	      |  show	     |  books.show
+// GET	     |  /books/{book}/edit    |	 edit	     |  books.edit
+// PUT/PATCH |	/books/{book}	      |  update	     |  books.update
+// DELETE	 |  /books/{book}	      |  destroy	 |  books.destroy
