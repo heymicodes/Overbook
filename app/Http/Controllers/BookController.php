@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use GuzzleHttp\Client;
 
 class BookController extends Controller
 {
@@ -33,7 +35,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('book.store');
+        return view('book.create');
     }
 
     /**
@@ -44,10 +46,30 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        Book::create($request->all());
+        $validatedData = $request->validate([
+            'ISBN' => 'required|unique:books,ISBN|min:10|max:13',
+        ]);
 
-        // TO DO : redirect to books/{book}
-        return redirect('books/');
+        $isbn = $validatedData['ISBN'];
+
+        if($isbn) {
+            $url = 'https://openlibrary.org/api/books?bibkeys=ISBN:'.$isbn.'&jscmd=details&format=json';
+            $client = new Client();
+            $response = $client->request('GET', $url);
+
+            $data = json_decode($response->getBody(), true)['ISBN:'.$isbn];
+
+            $book = new Book();
+            $book->title = isset($data['details']['title']) ? $data['details']['title'] : '';
+            $book->summary = isset($data['details']['description']) ? $data['details']['description']['value'] : '';
+            $book->cover = isset($data['thumbnail_url']) ? $data['thumbnail_url'] : ''; // -S.jpg || -L.jpg || -M.jpg
+            $book->ISBN = $isbn;
+            $book->publication_date = isset($data['details']['publish_date']) ? $data['details']['publish_date'] : '';
+
+            $book->save();
+
+            return redirect()->route('books.show', [$book]);
+        }
     }
 
     /**
@@ -58,7 +80,13 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        return view(
+            'book.show',
+            [
+                'book' => Book::find($book->id),
+                'status' => 'Book successfully added !'
+            ]
+        );
     }
 
     /**
