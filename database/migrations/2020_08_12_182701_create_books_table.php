@@ -19,7 +19,7 @@ class CreateBooksTable extends Migration
             $table->text('summary');
             $table->string('cover')->nullable()->default('default_cover.jpg');
             $table->string('ISBN')->unique();
-            $table->year('publication_date')->nullable();
+            $table->string('publication_date')->nullable();
             $table->unsignedTinyInteger('score')->default(0);
             $table->timestamps();
         });
